@@ -1,0 +1,106 @@
+/* ------------------------------------------------------------------
+   全域樣式：設計 token、reset 與少量共用工具類別。
+   元件專屬樣式一律放在各自的 *.module.css（CSS Modules），
+   避免 class 名稱互相污染。
+   ------------------------------------------------------------------ */
+
+:root {
+  color-scheme: dark;
+
+  --bg: #060b16;
+  --surface: rgba(255, 255, 255, 0.055);
+  --surface-strong: rgba(255, 255, 255, 0.1);
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  --text: #eef2f8;
+  --text-muted: rgba(226, 232, 240, 0.72);
+  --text-subtle: rgba(203, 213, 225, 0.48);
+  --accent: #38bdf8;
+  --danger: #f87171;
+
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 22px;
+  --shadow-card: 0 24px 60px -34px rgba(0, 0, 0, 0.95);
+
+  font-family:
+    'Inter', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, -apple-system,
+    'Segoe UI', Roboto, sans-serif;
+}
+
+/* 依天況調整主題色（背景漸層與圖示都會跟著變）。 */
+[data-tone='sunny'] {
+  --accent: #fbbf24;
+}
+
+[data-tone='cloudy'] {
+  --accent: #a8b6cc;
+}
+
+[data-tone='rainy'] {
+  --accent: #38bdf8;
+}
+
+[data-tone='snowy'] {
+  --accent: #a5f3fc;
+}
+
+[data-tone='stormy'] {
+  --accent: #c084fc;
+}
+
+[data-tone='neutral'] {
+  --accent: #38bdf8;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 僅供螢幕閱讀器使用的文字。 */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 45%, transparent);
+}

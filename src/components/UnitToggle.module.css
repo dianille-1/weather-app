@@ -1,0 +1,28 @@
+.toggle {
+  display: inline-flex;
+  padding: 0.2rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.option {
+  padding: 0.3rem 0.8rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.option:hover {
+  color: var(--text);
+}
+
+.active {
+  background: color-mix(in srgb, var(--accent) 85%, transparent);
+  color: #06121f;
+}

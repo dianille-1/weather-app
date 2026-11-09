@@ -1,0 +1,32 @@
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  min-height: 22rem;
+  padding: 2.5rem 1.5rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+  text-align: center;
+}
+
+.icon {
+  color: var(--accent);
+  opacity: 0.85;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.text {
+  margin: 0;
+  max-width: 26rem;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}

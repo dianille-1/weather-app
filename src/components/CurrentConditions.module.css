@@ -1,0 +1,126 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-card);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.placeBlock {
+  min-width: 0;
+}
+
+.place {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.placeMeta {
+  margin: 0.2rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.localTime {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: none;
+}
+
+.localTimeLabel {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.localTimeValue {
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.temperature {
+  margin: 0;
+  font-size: clamp(3rem, 9vw, 4.75rem);
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.description {
+  margin: 0.5rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.feelsLike {
+  margin: 0.3rem 0 0;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.icon {
+  flex: none;
+  color: var(--accent);
+  filter: drop-shadow(0 6px 18px color-mix(in srgb, var(--accent) 30%, transparent));
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border);
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-strong) 70%, transparent);
+}
+
+.metricLabel {
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+}
+
+.metricValue {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 520px) {
+  .card {
+    padding: 1.15rem;
+  }
+}

@@ -1,0 +1,65 @@
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--danger) 14%, var(--surface));
+  color: var(--text);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--danger);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0 0 0.15rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.message {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.meta {
+  margin: 0.35rem 0 0;
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+.retry {
+  flex: none;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-strong);
+  color: var(--text);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.retry:hover {
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface-strong));
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}

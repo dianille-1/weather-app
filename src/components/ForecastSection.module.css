@@ -1,0 +1,110 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.heading {
+  margin: 0;
+  padding: 0 0.25rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: minmax(6rem, 1.4fr) auto 3.2rem auto;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.card:hover {
+  background: var(--surface-strong);
+  transform: translateX(2px);
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.date {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.description {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.icon {
+  color: var(--accent);
+}
+
+.precipitation {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.precipitationValue {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.precipitationPlaceholder {
+  color: var(--text-subtle);
+}
+
+.temperatures {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.min {
+  color: var(--text-subtle);
+}
+
+.max {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+@media (max-width: 520px) {
+  .card {
+    grid-template-columns: 1fr auto auto;
+    gap: 0.6rem;
+    padding: 0.65rem 0.8rem;
+  }
+
+  .precipitation {
+    display: none;
+  }
+}
