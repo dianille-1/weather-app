@@ -40,9 +40,10 @@ export function WeatherPage() {
 
   // 還沒有選任何城市時，預設顯示使用者所在位置的當地天氣。
   const currentLocation = useCurrentLocation(selected === null, reverseGeocoder);
-  const activeLocation = selected ?? currentLocation.location;
 
-  const weather = useWeather(weatherProvider, activeLocation, units);
+  // 天氣資料一律以「網址列上的城市」為準：自動定位的結果會先寫回網址列，
+  // 再由這裡讀出來。這樣「顯示的地方」永遠只有一個來源。
+  const weather = useWeather(weatherProvider, selected, units);
 
   // 自動定位到的城市也寫回網址列：網址列描述的永遠是畫面上顯示的那個地方，
   // 分享出去的連結才會是對的內容。

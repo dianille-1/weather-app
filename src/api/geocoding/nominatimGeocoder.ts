@@ -1,6 +1,7 @@
 import type { ProviderCallOptions } from '../callOptions';
 import type { Location } from '../../types/location';
 import { AppError } from '../errors';
+import { createTtlCache } from '../cache';
 import { getJson } from '../http';
 import type { Geocoder } from './geocoder';
 import type { ReverseGeocoder } from './reverseGeocoder';
@@ -127,6 +128,11 @@ export function createNominatimClient(options: NominatimGeocoderOptions = {}): N
   // 用一個閉包變數記錄上次請求時間，保證兩次請求至少間隔 MIN_REQUEST_INTERVAL_MS。
   let lastRequestAt = 0;
 
+  // 反查結果快取：同一組座標永遠對應同一個地方。
+  // 對 React StrictMode 重複執行的 effect、或是使用者反覆重新定位都有幫助，
+  // 也順便減少對 Nominatim 的請求次數。
+  const reverseCache = createTtlCache<Location>(REVERSE_CACHE_TTL_MS);
+
   const waitForSlot = async (signal: AbortSignal | undefined): Promise<void> => {
     const waitMs = MIN_REQUEST_INTERVAL_MS - (Date.now() - lastRequestAt);
     if (waitMs > 0) {
@@ -170,7 +176,14 @@ export function createNominatimClient(options: NominatimGeocoderOptions = {}): N
       longitude: number,
       callOptions: ProviderCallOptions = {},
     ): Promise<Location | null> {
+      const cacheKey = `${latitude.toFixed(4)},${longitude.toFixed(4)}`;
+
       await waitForSlot(callOptions.signal);
+
+      // 先節流、再查快取：兩個同時進來的請求（例如 React StrictMode 重複執行
+      // effect），後面那個會等到前一個完成並寫入快取後才檢查，因此不會再打一次上游。
+      const cached = reverseCache.get(cacheKey);
+      if (cached) return cached;
 
       const url = new URL(NOMINATIM_REVERSE_ENDPOINT);
       url.searchParams.set('lat', String(latitude));
@@ -187,13 +200,18 @@ export function createNominatimClient(options: NominatimGeocoderOptions = {}): N
         headers: { 'User-Agent': CLIENT_USER_AGENT },
       });
 
-      return toReverseLocation(payload, latitude, longitude);
+      const location = toReverseLocation(payload, latitude, longitude);
+      if (location) reverseCache.set(cacheKey, location);
+      return location;
     },
   };
 }
 
 /** 兩次請求之間至少間隔的時間（Nominatim 政策：1 request/second）。 */
 const MIN_REQUEST_INTERVAL_MS = 1000;
+
+/** 反查結果的快取時間：同一組座標對應同一個地方，不需要一直查。 */
+const REVERSE_CACHE_TTL_MS = 5 * 60 * 1000;
 
 function isPlaceLevel(result: NominatimResult): boolean {
   const type = result.addresstype;

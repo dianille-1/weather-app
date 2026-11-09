@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 import type { AppError } from '../api/errors';
 import type { WeatherProvider } from '../api/weatherProvider';
 import type { Location } from '../types/location';
@@ -23,10 +23,8 @@ export interface WeatherState {
  * 當「地點」或「單位」改變時會自動重新查詢；
  * 查詢期間保留上一次的資料，避免畫面閃爍。
  *
- * 判斷「是否需要重新查詢」用的是**座標**而不是地點物件的身分：
- * 同一個地方可能會被換成另一個等價的物件（例如自動定位得到的地點
- * 寫回網址列後，會變成從網址列還原出來的另一個物件），
- * 那種情況不該重新打一次 API。
+ * 地點物件本身來自網址列（見 utils/urlState.ts），同一組參數會得到同一個物件，
+ * 因此用物件身分判斷「要不要重新查詢」是安全的。
  */
 export function useWeather(
   provider: WeatherProvider,
@@ -40,26 +38,17 @@ export function useWeather(
   );
   const { state, run, reset } = useAsyncResource(task);
 
-  const latitude = location?.latitude ?? null;
-  const longitude = location?.longitude ?? null;
-
-  // 保存最新的地點物件：effect 只依賴座標，但要把完整的物件傳給 provider。
-  const locationRef = useRef(location);
-  locationRef.current = location;
-
   useEffect(() => {
-    const target = locationRef.current;
-    if (!target || latitude === null || longitude === null) {
+    if (!location) {
       reset();
       return;
     }
-    void run(target, units);
-  }, [latitude, longitude, units, run, reset]);
+    void run(location, units);
+  }, [location, units, run, reset]);
 
   const reload = useCallback(() => {
-    const target = locationRef.current;
-    if (target) void run(target, units);
-  }, [units, run]);
+    if (location) void run(location, units);
+  }, [location, units, run]);
 
   return {
     snapshot: state.data,
