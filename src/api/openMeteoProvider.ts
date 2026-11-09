@@ -1,24 +1,24 @@
 import { AppError } from './errors';
 import { getJson } from './http';
+import type { ProviderCallOptions } from './callOptions';
 import type { Location } from '../types/location';
 import type { DailyForecast, Units, WeatherSnapshot } from '../types/weather';
 import { convertTemperature, convertWindSpeed } from '../utils/units';
-import type { ProviderCallOptions, WeatherProvider } from './weatherProvider';
+import type { WeatherProvider } from './weatherProvider';
 
 /**
- * Open-Meteo provider。
+ * Open-Meteo 天氣資料來源。
  *
  * 為什麼選 Open-Meteo：
  *   - 免註冊、免 API key，對 take-home 作業與面試演示最友善
  *   - 回傳原始資料（沒有難以解析的在地化字串），資料格式穩定
  *   - 有明確的 WMO 天氣代碼，語意跨國一致
+ *   - 一次請求就能拿到即時觀測 + 7 天預報，減少往返
  *
  * 官方文件：https://open-meteo.com/en/docs
  */
 
-const GEOCODING_ENDPOINT = 'https://geocoding-api.open-meteo.com/v1/search';
 const FORECAST_ENDPOINT = 'https://api.open-meteo.com/v1/forecast';
-const DEFAULT_LANGUAGE = 'zh';
 const FORECAST_DAYS = 7;
 
 const CURRENT_FIELDS = [
@@ -41,20 +41,6 @@ const DAILY_FIELDS = [
   'sunrise',
   'sunset',
 ] as const;
-
-/** 地理編碼 API 的原始回應格式（僅取用到的欄位）。 */
-interface GeocodingResponse {
-  results?: Array<{
-    id: number;
-    name: string;
-    latitude: number;
-    longitude: number;
-    country?: string;
-    country_code?: string;
-    admin1?: string;
-    timezone?: string;
-  }>;
-}
 
 /** 預報 API 的原始回應格式（僅取用到的欄位）。 */
 interface ForecastResponse {
@@ -82,31 +68,10 @@ interface ForecastResponse {
   };
 }
 
-export interface OpenMeteoProviderOptions {
-  /** 地名搜尋語言（ISO 639-1）。 */
-  language?: string;
-}
-
-export function createOpenMeteoProvider(options: OpenMeteoProviderOptions = {}): WeatherProvider {
-  const language = options.language ?? DEFAULT_LANGUAGE;
-
+export function createOpenMeteoProvider(): WeatherProvider {
   return {
     id: 'open-meteo',
     displayName: 'Open-Meteo',
-
-    async searchLocations(query: string, callOptions: ProviderCallOptions = {}): Promise<Location[]> {
-      const url = new URL(GEOCODING_ENDPOINT);
-      url.searchParams.set('name', query);
-      url.searchParams.set('count', '10');
-      url.searchParams.set('language', language);
-      url.searchParams.set('format', 'json');
-
-      const payload = await getJson<GeocodingResponse>(url.toString(), {
-        signal: callOptions.signal,
-      });
-
-      return (payload.results ?? []).map(toLocation);
-    },
 
     async fetchWeather(
       location: Location,
@@ -131,31 +96,6 @@ export function createOpenMeteoProvider(options: OpenMeteoProviderOptions = {}):
       return toSnapshot(payload, location, units);
     },
   };
-}
-
-/** 原始回應 → 領域模型。 */
-function toLocation(raw: NonNullable<GeocodingResponse['results']>[number]): Location {
-  return {
-    id: `geo-${raw.id}`,
-    name: raw.name,
-    adminArea: cleanAdminArea(raw.admin1),
-    country: raw.country ?? null,
-    countryCode: raw.country_code ? raw.country_code.toUpperCase() : null,
-    latitude: raw.latitude,
-    longitude: raw.longitude,
-    timezone: raw.timezone ?? null,
-  };
-}
-
-/**
- * Open-Meteo 在部分地區會回傳「臺灣省 or 台灣省」這種多語系並列的欄位，
- * 這裡取主要名稱，避免 UI 出現奇怪的重複字串。
- */
-function cleanAdminArea(value: string | undefined): string | null {
-  if (!value) return null;
-  const [primary = ''] = value.split(' or ');
-  const cleaned = primary.trim();
-  return cleaned.length > 0 ? cleaned : null;
 }
 
 function toSnapshot(

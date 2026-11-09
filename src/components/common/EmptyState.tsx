@@ -1,7 +1,12 @@
 import styles from './EmptyState.module.css';
 
+interface Props {
+  /** 額外說明（例如定位失敗的原因）。 */
+  hint?: string;
+}
+
 /** 尚未選擇地點時的初始畫面。 */
-export function EmptyState() {
+export function EmptyState({ hint }: Props) {
   return (
     <section className={styles.empty} aria-label="開始使用">
       <div className={styles.icon} aria-hidden="true">
@@ -23,6 +28,7 @@ export function EmptyState() {
       <p className={styles.text}>
         在左側輸入城市名稱，即可查看目前天氣狀況、體感溫度與未來一週的預報。
       </p>
+      {hint ? <p className={styles.hint}>{hint}</p> : null}
     </section>
   );
 }

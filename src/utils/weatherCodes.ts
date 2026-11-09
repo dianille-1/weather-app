@@ -22,7 +22,7 @@ export type WeatherIconKey =
   | 'hail';
 
 /** 天氣氛圍色調，用來決定背景漸層與卡片配色。 */
-export type WeatherTone = 'sunny' | 'cloudy' | 'rainy' | 'snowy' | 'stormy';
+export type WeatherTone = 'sunny' | 'cloudy' | 'rainy' | 'snowy' | 'stormy' | 'neutral';
 
 export interface WeatherDescription {
   code: number;

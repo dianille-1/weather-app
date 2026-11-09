@@ -1,0 +1,9 @@
+.footer {
+  max-width: 72rem;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+  text-align: center;
+}

@@ -1,7 +1,7 @@
-import { formatForecastDay, todayISO } from '../utils/format';
-import { describeWeather } from '../utils/weatherCodes';
-import { formatPercentage, formatTemperature } from '../utils/units';
-import type { DailyForecast, Units } from '../types/weather';
+import { formatForecastDay, todayISO } from '../../utils/format';
+import { describeWeather } from '../../utils/weatherCodes';
+import { formatPercentage, formatTemperature } from '../../utils/units';
+import type { DailyForecast, Units } from '../../types/weather';
 import { WeatherIcon } from './WeatherIcon';
 import styles from './ForecastSection.module.css';
 

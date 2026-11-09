@@ -13,6 +13,8 @@ export type AppErrorKind =
   | 'rateLimited'
   | 'server'
   | 'parse'
+  | 'permissionDenied'
+  | 'unsupported'
   | 'unknown';
 
 export interface AppErrorOptions {
@@ -64,12 +66,14 @@ export function isAbortError(error: unknown): boolean {
 
 /** 依錯誤種類給使用者看的預設訊息。 */
 export const ERROR_MESSAGES: Record<AppErrorKind, string> = {
-  network: '無法連線至天氣服務，請檢查網路連線後再試。',
+  network: '無法連線至服務，請檢查網路連線後再試。',
   timeout: '連線逾時，請稍後再試。',
   aborted: '請求已取消。',
   notFound: '找不到相符的地點，請試試其他關鍵字。',
   rateLimited: '查詢過於頻繁，請稍後再試。',
   server: '天氣服務暫時無法使用，請稍後再試。',
   parse: '天氣服務回傳的資料格式無法解析。',
+  permissionDenied: '無法取得你的位置（權限被拒絕），請改用搜尋選擇城市。',
+  unsupported: '這個瀏覽器不支援定位功能，請改用搜尋選擇城市。',
   unknown: '發生未預期的錯誤，請稍後再試。',
 };

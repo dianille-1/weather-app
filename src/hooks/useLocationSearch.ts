@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import type { AppError } from '../api/errors';
-import type { WeatherProvider } from '../api/weatherProvider';
+import type { Geocoder } from '../api/geocoding/geocoder';
 import type { Location } from '../types/location';
 import { useAsyncResource } from './useAsyncResource';
 import type { AsyncStatus } from './useAsyncResource';
@@ -31,13 +31,13 @@ export interface LocationSearch {
  *   2. AbortController + 請求序號：舊請求即使回來也不會覆蓋新結果
  *   3. 最短字數限制：避免無意义的請求
  */
-export function useLocationSearch(provider: WeatherProvider, query: string): LocationSearch {
+export function useLocationSearch(geocoder: Geocoder, query: string): LocationSearch {
   const debouncedQuery = useDebouncedValue(query.trim(), SEARCH_DEBOUNCE_MS);
   const isTooShort = debouncedQuery.length < MIN_QUERY_LENGTH;
 
   const task = useCallback(
-    (signal: AbortSignal, term: string) => provider.searchLocations(term, { signal }),
-    [provider],
+    (signal: AbortSignal, term: string) => geocoder.search(term, { signal }),
+    [geocoder],
   );
   const { state, run, reset } = useAsyncResource(task);
 

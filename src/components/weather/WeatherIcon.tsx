@@ -1,5 +1,5 @@
-import { describeWeather } from '../utils/weatherCodes';
-import type { WeatherIconKey } from '../utils/weatherCodes';
+import { describeWeather } from '../../utils/weatherCodes';
+import type { WeatherIconKey } from '../../utils/weatherCodes';
 
 interface Props {
   /** WMO 天氣代碼。 */

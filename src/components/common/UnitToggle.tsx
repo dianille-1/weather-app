@@ -1,5 +1,5 @@
-import { toggleTemperatureUnit } from '../hooks/useUnits';
-import type { Units } from '../types/weather';
+import { toggleTemperatureUnit } from '../../hooks/useUnits';
+import type { Units } from '../../types/weather';
 import styles from './UnitToggle.module.css';
 
 interface Props {

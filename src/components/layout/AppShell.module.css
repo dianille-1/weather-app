@@ -1,0 +1,32 @@
+.app {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-height: 100vh;
+  padding: clamp(1rem, 3vw, 2.25rem);
+  background:
+    radial-gradient(
+      1100px 620px at 12% -12%,
+      color-mix(in srgb, var(--accent) 28%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      900px 520px at 92% -6%,
+      color-mix(in srgb, var(--accent) 16%, transparent),
+      transparent 58%
+    ),
+    var(--bg);
+  background-attachment: fixed;
+  transition: background 0.7s ease;
+}
+
+/* 頁面內容的容器；flex: 1 讓頁尾永遠被推到最下方。 */
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+}

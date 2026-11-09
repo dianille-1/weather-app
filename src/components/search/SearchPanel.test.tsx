@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import type { WeatherProvider } from '../api/weatherProvider';
-import type { Location } from '../types/location';
+import type { Geocoder } from '../../api/geocoding/geocoder';
+import type { Location } from '../../types/location';
 import { SearchPanel } from './SearchPanel';
 
 const taipei: Location = {
@@ -16,24 +16,21 @@ const taipei: Location = {
   timezone: 'Asia/Taipei',
 };
 
-function createFakeProvider(): WeatherProvider {
+function createFakeGeocoder(): Geocoder {
   return {
     id: 'fake',
-    displayName: 'Fake provider',
-    searchLocations: vi.fn(async () => [taipei]),
-    fetchWeather: vi.fn(async () => {
-      throw new Error('fetchWeather 未在測試中使用');
-    }),
+    displayName: 'Fake geocoder',
+    search: vi.fn(async () => [taipei]),
   };
 }
 
 describe('SearchPanel', () => {
   it('搜尋並選取地點時會呼叫 onSelect', async () => {
     const onSelect = vi.fn();
-    const provider = createFakeProvider();
+    const geocoder = createFakeGeocoder();
     const user = userEvent.setup();
 
-    render(<SearchPanel provider={provider} onSelect={onSelect} />);
+    render(<SearchPanel geocoder={geocoder} onSelect={onSelect} />);
 
     await user.type(screen.getByRole('combobox'), '台北');
 
@@ -44,27 +41,27 @@ describe('SearchPanel', () => {
   });
 
   it('輸入字數不足時不會送出查詢', async () => {
-    const provider = createFakeProvider();
+    const geocoder = createFakeGeocoder();
     const user = userEvent.setup();
 
-    render(<SearchPanel provider={provider} onSelect={vi.fn()} />);
+    render(<SearchPanel geocoder={geocoder} onSelect={vi.fn()} />);
 
     await user.type(screen.getByRole('combobox'), '台');
 
     await waitFor(() => {
       expect(screen.getByText(/請輸入至少 2 個字元/)).toBeInTheDocument();
     });
-    expect(provider.searchLocations).not.toHaveBeenCalled();
+    expect(geocoder.search).not.toHaveBeenCalled();
   });
 
   it('查詢失敗時顯示錯誤訊息與重試按鈕', async () => {
-    const provider = createFakeProvider();
-    provider.searchLocations = vi.fn(async () => {
+    const geocoder = createFakeGeocoder();
+    geocoder.search = vi.fn(async () => {
       throw new TypeError('Failed to fetch');
     });
     const user = userEvent.setup();
 
-    render(<SearchPanel provider={provider} onSelect={vi.fn()} />);
+    render(<SearchPanel geocoder={geocoder} onSelect={vi.fn()} />);
 
     await user.type(screen.getByRole('combobox'), '台北');
 

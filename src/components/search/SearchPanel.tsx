@@ -1,14 +1,14 @@
 import { useId, useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
-import type { WeatherProvider } from '../api/weatherProvider';
-import { MIN_QUERY_LENGTH, useLocationSearch } from '../hooks/useLocationSearch';
-import type { Location } from '../types/location';
-import { ErrorNotice } from './ErrorNotice';
-import { Spinner } from './Spinner';
+import type { Geocoder } from '../../api/geocoding/geocoder';
+import { MIN_QUERY_LENGTH, useLocationSearch } from '../../hooks/useLocationSearch';
+import type { Location } from '../../types/location';
+import { ErrorNotice } from '../common/ErrorNotice';
+import { Spinner } from '../common/Spinner';
 import styles from './SearchPanel.module.css';
 
 interface Props {
-  provider: WeatherProvider;
+  geocoder: Geocoder;
   onSelect: (location: Location) => void;
 }
 
@@ -21,7 +21,7 @@ interface Props {
  *   - 載入中 / 錯誤 / 查無結果 三種明確狀態
  *   - ARIA listbox 語意，螢幕閱讀器可正確朗讀
  */
-export function SearchPanel({ provider, onSelect }: Props) {
+export function SearchPanel({ geocoder, onSelect }: Props) {
   const [query, setQuery] = useState('');
   // 以「地點 id」而不是索引記錄選取中的項目：
   // 結果換一批時，舊 id 不存在 → activeIndex 自然變成 -1，
@@ -29,7 +29,7 @@ export function SearchPanel({ provider, onSelect }: Props) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const listId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
-  const search = useLocationSearch(provider, query);
+  const search = useLocationSearch(geocoder, query);
 
   const activeIndex =
     activeId === null ? -1 : search.results.findIndex((item) => item.id === activeId);

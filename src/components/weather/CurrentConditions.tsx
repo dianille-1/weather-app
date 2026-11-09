@@ -1,7 +1,7 @@
-import { describeWeather } from '../utils/weatherCodes';
-import { formatNaiveTime, formatTimeInZone, windDirectionLabel } from '../utils/format';
-import { formatPercentage, formatTemperature, formatWindSpeed } from '../utils/units';
-import type { WeatherSnapshot } from '../types/weather';
+import { describeWeather } from '../../utils/weatherCodes';
+import { formatNaiveTime, formatTimeInZone, windDirectionLabel } from '../../utils/format';
+import { formatPercentage, formatTemperature, formatWindSpeed } from '../../utils/units';
+import type { WeatherSnapshot } from '../../types/weather';
 import { WeatherIcon } from './WeatherIcon';
 import styles from './CurrentConditions.module.css';
 
@@ -17,7 +17,9 @@ export function CurrentConditions({ snapshot }: Props) {
 
   return (
     <article className={styles.card} aria-label={`${location.name} 目前天氣`}>
-      <header className={styles.header}>
+      {/* 用 div 而不是 <header>：位於 <article> 內的 <header> 在無障礙樹裡
+          不應該是 banner 角色，用 div 可以避免與頁首產生角色衝突。 */}
+      <div className={styles.header}>
         <div className={styles.placeBlock}>
           <h2 className={styles.place}>{location.name}</h2>
           {placeLine ? <p className={styles.placeMeta}>{placeLine}</p> : null}
@@ -26,7 +28,7 @@ export function CurrentConditions({ snapshot }: Props) {
           <span className={styles.localTimeLabel}>當地時間</span>
           <span className={styles.localTimeValue}>{formatTimeInZone(timezone)}</span>
         </div>
-      </header>
+      </div>
 
       <div className={styles.main}>
         <div>

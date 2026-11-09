@@ -1,4 +1,4 @@
-import type { AppError } from '../api/errors';
+import type { AppError } from '../../api/errors';
 import styles from './ErrorNotice.module.css';
 
 interface Props {

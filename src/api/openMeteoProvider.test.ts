@@ -3,21 +3,6 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createOpenMeteoProvider } from './openMeteoProvider';
 import type { Location } from '../types/location';
 
-const geocodePayload = {
-  results: [
-    {
-      id: 1668341,
-      name: '臺北市',
-      latitude: 25.05306,
-      longitude: 121.52639,
-      country: '台灣',
-      country_code: 'tw',
-      admin1: '臺灣省 or 台灣省',
-      timezone: 'Asia/Taipei',
-    },
-  ],
-};
-
 const forecastPayload = {
   timezone: 'Asia/Taipei',
   current: {
@@ -66,32 +51,9 @@ function mockJson(payload: unknown) {
   return spy;
 }
 
-describe('openMeteo provider', () => {
+describe('openMeteo 天氣來源', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
-  });
-
-  it('把地理編碼結果轉換成領域模型，並清理多語系行政區欄位', async () => {
-    mockJson(geocodePayload);
-    const provider = createOpenMeteoProvider();
-
-    const [location] = await provider.searchLocations('台北');
-
-    expect(location).toMatchObject({
-      id: 'geo-1668341',
-      name: '臺北市',
-      adminArea: '臺灣省',
-      country: '台灣',
-      countryCode: 'TW',
-      timezone: 'Asia/Taipei',
-    });
-  });
-
-  it('查不到地點時回傳空陣列而不是拋出例外', async () => {
-    mockJson({});
-    const provider = createOpenMeteoProvider();
-
-    await expect(provider.searchLocations('zzzz')).resolves.toEqual([]);
   });
 
   it('把預報資料換算成使用者選擇的單位', async () => {
@@ -124,6 +86,15 @@ describe('openMeteo provider', () => {
     expect(snapshot.current.windSpeed).toBe(14.4);
   });
 
+  it('回應缺少即時天氣欄位時轉成 parse 錯誤', async () => {
+    mockJson({ timezone: 'Asia/Taipei', daily: forecastPayload.daily });
+    const provider = createOpenMeteoProvider();
+
+    await expect(
+      provider.fetchWeather(taipei, { temperature: 'celsius', windSpeed: 'kmh' }),
+    ).rejects.toMatchObject({ kind: 'parse' });
+  });
+
   it('HTTP 錯誤會被正規化成 AppError', async () => {
     vi.stubGlobal(
       'fetch',
@@ -131,7 +102,9 @@ describe('openMeteo provider', () => {
     );
     const provider = createOpenMeteoProvider();
 
-    await expect(provider.searchLocations('台北')).rejects.toMatchObject({
+    await expect(
+      provider.fetchWeather(taipei, { temperature: 'celsius', windSpeed: 'kmh' }),
+    ).rejects.toMatchObject({
       kind: 'server',
       status: 500,
     });
@@ -144,7 +117,9 @@ describe('openMeteo provider', () => {
     );
     const provider = createOpenMeteoProvider();
 
-    await expect(provider.searchLocations('台北')).rejects.toMatchObject({
+    await expect(
+      provider.fetchWeather(taipei, { temperature: 'celsius', windSpeed: 'kmh' }),
+    ).rejects.toMatchObject({
       kind: 'parse',
     });
   });
